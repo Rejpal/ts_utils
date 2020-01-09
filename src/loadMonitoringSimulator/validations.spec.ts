@@ -20,7 +20,7 @@ describe('validations', () => {
     });
     describe('isValidOutputMetric', () => {
         dataSet3.forEach((testInput, index) => {
-            test(`[${index}] returns ${testInput.expectedResult}. Input ${JSON.stringify(testInput.metric)}`, () => {
+            test(`[${index}] ${testInput.description} returns ${testInput.expectedResult}. Input ${JSON.stringify(testInput.metric)}`, () => {
                 const {metric, expectedResult} = testInput;
                 expect(isValidOutputMetric(metric)).toBe(expectedResult);
             });

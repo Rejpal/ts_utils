@@ -23,4 +23,5 @@ export interface OutputMetric {
     credit: number;
     price: number;
     minPrice: number;
+    priceChangeStep: number;
 }

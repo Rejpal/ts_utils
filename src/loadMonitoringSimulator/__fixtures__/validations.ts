@@ -45,42 +45,54 @@ export const dataSet1 = [
 ];
 
 export const dataSet3 = [
-    {metric: {}, expectedResult: false},
     {
-        metric: {
-            name: 'test',
-            credit: 2000,
-            minPrice: -10,
-            price: -10,
-        },
-        expectedResult: true,
+        metric: {},
+        expectedResult: false,
+        description: 'fails when metric is an empty object',
     },
     {
         metric: {
             name: 'test',
             credit: 2000,
-            minPrice: -10,
-            price: -15,
+            minPrice: 10,
+            price: 10,
+            priceChangeStep: 2,
         },
         expectedResult: true,
+        description: 'passes when price === minPrice',
+    },
+    {
+        metric: {
+            name: 'test',
+            credit: 2000,
+            minPrice: 10,
+            price: 15,
+            priceChangeStep: 2,
+        },
+        expectedResult: true,
+        description: 'passes when price > minPrice',
     },
     {
         metric: {
             name: 12,
             credit: 2000,
-            minPrice: -10,
-            price: -10,
+            minPrice: 10,
+            price: 10,
+            priceChangeStep: 2,
         },
         expectedResult: false,
+        description: 'fails when name is not a string',
     },
     {
         metric: {
             name: 'test',
             credit: -1,
-            minPrice: -10,
-            price: -10,
+            minPrice: 10,
+            price: 10,
+            priceChangeStep: 2,
         },
         expectedResult: false,
+        description: 'fails when credit < 0',
     },
     {
         metric: {
@@ -88,25 +100,53 @@ export const dataSet3 = [
             credit: 2000,
             minPrice: 10,
             price: -10,
+            priceChangeStep: 2,
         },
         expectedResult: false,
+        description: 'fails when price < 10',
     },
     {
         metric: {
             name: 'test',
             credit: 2000,
-            minPrice: -10,
+            minPrice: 10,
             price: 'ahoj',
+            priceChangeStep: 2,
         },
         expectedResult: false,
+        description: 'fails when price is NaN',
+    },
+    {
+        metric: {
+            name: 'test',
+            credit: 2000,
+            minPrice: 10,
+            price: 9,
+            priceChangeStep: 2,
+        },
+        expectedResult: false,
+        description: 'fails when price < minPrice',
     },
     {
         metric: {
             name: 'test',
             credit: 2000,
             minPrice: -10,
-            price: -9,
+            price: 9,
+            priceChangeStep: 2,
         },
         expectedResult: false,
+        description: 'fails when minPrice < 0',
+    },
+    {
+        metric: {
+            name: 'test',
+            credit: 2000,
+            minPrice: 10,
+            price: 9,
+            priceChangeStep: -2,
+        },
+        expectedResult: false,
+        description: 'fails when priceChangeStep < 0',
     },
 ];

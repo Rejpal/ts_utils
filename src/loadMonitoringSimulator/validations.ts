@@ -22,14 +22,15 @@ export function isValidInputMetric(metric): metric is InputMetric {
         return false;
     }
 
-    const { changeStep, probabilityOfChange, minCriticalValue, maxCriticalValue, name, currentValue } = metric;
+    const { changeStep, probabilityOfChange, minCriticalValue, maxCriticalValue, name } = metric;
 
     return (
         typeof name === 'string' &&
         isNumberInsideBoundaries(changeStep, -100, 100) &&
         isNumberInsideBoundaries(probabilityOfChange, 0, 100) &&
         isNumberInsideBoundaries(minCriticalValue, -100, 100) &&
-        isNumberInsideBoundaries(maxCriticalValue, -100, 100)
+        isNumberInsideBoundaries(maxCriticalValue, -100, 100) &&
+        maxCriticalValue > minCriticalValue
     );
 }
 
@@ -38,13 +39,14 @@ export function isValidOutputMetric(metric): metric is OutputMetric {
         return false;
     }
 
-    const {name, credit, price, minPrice} = metric;
+    const {name, credit, price, minPrice, priceChangeStep} = metric;
 
     return (
         typeof name === 'string' &&
         typeof credit === 'number' && credit >= 0 &&
-        typeof minPrice === 'number' && minPrice <= 0 &&
-        typeof price === 'number' && price <= minPrice
+        typeof minPrice === 'number' && minPrice >= 0 &&
+        typeof price === 'number' && price >= minPrice &&
+        typeof priceChangeStep === 'number' && priceChangeStep >= 0
     );
 }
 
