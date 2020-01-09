@@ -1,19 +1,6 @@
-import {InputMetric, OutputMetric} from './types/metrics';
 import {validateLoadMonitoringSimulatorInput} from './validations';
 import { getRandomNumberFromInterval } from './numberGenerator';
-/*
-​
-Napiste funkci splnujici nasledujici zadani
-Vstup:
-K vstupnich  metrik (například cpu, ram, disk) < 0, 100 >, krok zmeny <-100, 100 >, pravdepodobnost zmeny metriky < 0 , 100, minimalni a maximalni kriticke hodnoty metriky, jejichz prekroceni  zpusobi opacnou akci na vystupni metrice
-pocatecni hodnota vstupni metriky je v intervalu  minimalni + 10% a maximalni - 10% kriticke hodnoty
-jedna vystupni metrika (například penize) < 0, oo >, krok zmeny < -oo, 00 >  minimalne vsak  -1 * aktualni hodnota metriky, navyseni metriky zpusobni opacnou akci na vstupni metrice o polovinu
-pocet hodnot v case: N
-pocet zmen: Z
-Vystup:
-rada hodnot pro kazdou vstupni a vystupni metriku.
-​
-*/
+import {ScaleList} from './types/scaling';
 
 export function loadMonitoringSimulator(
     inputMetrics: any,
@@ -88,7 +75,7 @@ export function getNewValue(currentValue: number, probabilityOfChange: number, c
     const diceRoll = Math.random() * 100;
     let newValue = currentValue;
     if (diceRoll <= probabilityOfChange) {
-        if (Math.random() > 1) {
+        if (Math.random() > 0.5) {
             // change up
             newValue += changeStep;
             if (newValue > 100) {
@@ -104,11 +91,6 @@ export function getNewValue(currentValue: number, probabilityOfChange: number, c
     }
 
     return newValue;
-}
-
-export interface ScaleList {
-    upscale: number[];
-    downscale: number[];
 }
 
 export function scaleMetrics(

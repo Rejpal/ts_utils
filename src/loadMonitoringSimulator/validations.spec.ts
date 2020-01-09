@@ -18,6 +18,7 @@ describe('validations', () => {
             });
         });
     });
+
     describe('isValidOutputMetric', () => {
         dataSet3.forEach((testInput, index) => {
             test(`[${index}] ${testInput.description} returns ${testInput.expectedResult}. Input ${JSON.stringify(testInput.metric)}`, () => {
@@ -26,6 +27,7 @@ describe('validations', () => {
             });
         });
     });
+
     describe('isPositiveInteger', () => {
         const successDataset = [0, 1, 2000];
         const failDataset = [-1, 'invalid', false, -1500, 2.5];
