@@ -1,3 +1,5 @@
+import {cloneDeep} from 'lodash';
+import {UnknownOperationError} from './errors/unknownOperation';
 
 enum OPCODES {
     ADD = 1,
@@ -5,29 +7,87 @@ enum OPCODES {
     END = 99,
 }
 
-export function mainThread(initState: number[]): number[] {
-    let currentIndex = 0;
-    while (initState[currentIndex] !== OPCODES.END) {
-        switch (initState[currentIndex]) {
-            case OPCODES.ADD:
-                currentIndex = add(initState, currentIndex);
-                break;
-            case OPCODES.MULTIPLY:
-                currentIndex = multiply(initState, currentIndex);
-                break;
-            default:
-                throw new Error(`unknown operation ${initState[currentIndex]} on index ${currentIndex}`);
-        }
+export class Computer {
+    public memory: number[];
+    private instructionPointer = 0;
+
+    constructor(initMemory: number[]) {
+        this.memory = initMemory;
     }
-    return initState;
-}
 
-export function add(state: number[], index: number): number {
-    state[state[index + 3]] = state[state[index + 1]] + state[state[index + 2]];
-    return index + 4;
-}
+    intCodeProgram(): number[] {
+        this.instructionPointer = 0;
+        while (this.memory[this.instructionPointer] !== OPCODES.END) {
+            switch (this.memory[this.instructionPointer]) {
+                case OPCODES.ADD:
+                    this.add();
+                    break;
+                case OPCODES.MULTIPLY:
+                    this.multiply();
+                    break;
+                default:
+                    throw new UnknownOperationError(this.memory[this.instructionPointer].toString());
+            }
+        }
+        return this.memory;
+    }
 
-export function multiply(state: number[], index: number): number {
-    state[state[index + 3]] = state[state[index + 1]] * state[state[index + 2]];
-    return index + 4;
+    findNounAndVerb(finalValue: number, initMemory: number[]): [number, number] {
+        let noun = 0;
+        let verb = 0;
+        this.memory = cloneDeep(initMemory);
+        this.instructionPointer = 0;
+        this.memory[1] = noun;
+        this.memory[2] = verb;
+        this.intCodeProgram();
+
+        while (this.memory[0] !== finalValue) {
+            // set new noun and verb
+            noun++;
+            if (noun === 100) {
+                noun = 0;
+                verb++;
+            }
+
+            if (verb === 100) {
+                throw new Error ('Unable to find solution');
+            }
+
+            // init memory (instructionPointer is reset by intCodeProgram already)
+            this.memory = cloneDeep(initMemory);
+            this.memory[1] = noun;
+            this.memory[2] = verb;
+
+            // try to run the program
+            try {
+                this.intCodeProgram();
+            } catch (err) {
+                if (!(err instanceof UnknownOperationError)) {
+                    throw err;
+                }
+            }
+        }
+
+        return [noun, verb];
+    }
+
+    add() {
+        const operand1 = this.memory[this.memory[this.instructionPointer + 1]];
+        const operand2 = this.memory[this.memory[this.instructionPointer + 2]];
+        const storeAddr = this.memory[this.instructionPointer + 3];
+
+        this.memory[storeAddr] = operand1 + operand2;
+
+        this.instructionPointer += 4;
+    }
+
+    multiply() {
+        const operand1 = this.memory[this.memory[this.instructionPointer + 1]];
+        const operand2 = this.memory[this.memory[this.instructionPointer + 2]];
+        const storeAddr = this.memory[this.instructionPointer + 3];
+
+        this.memory[storeAddr] = operand1 * operand2;
+
+        this.instructionPointer += 4;
+    }
 }

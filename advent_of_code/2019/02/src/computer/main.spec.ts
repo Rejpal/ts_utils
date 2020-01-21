@@ -1,9 +1,9 @@
-import {mainThread, add} from './main';
+import {Computer} from './main';
 
 describe('computer', () => {
     describe('mainThread', () => {
         test('is defined', () => {
-            expect(mainThread).toBeDefined();
+            expect(Computer).toBeDefined();
         });
 
         const dataset = [
@@ -41,8 +41,10 @@ describe('computer', () => {
         ];
 
         dataset.forEach(({initState, finalState}, index) => {
+            const computer = new Computer(initState);
             test(`[${index}] gives expected finalState`, () => {
-                expect(mainThread(initState)).toEqual(finalState);
+                computer.intCodeProgram();
+                expect(computer.memory).toEqual(finalState);
             });
         });
     });
@@ -66,8 +68,9 @@ describe('computer', () => {
         dataset.forEach((testInput, index) => {
             const {currentIndex, initState, finalIndex, finalState} = testInput;
             test(`[${index}] returns expected final state and index`, () => {
-                expect(add(initState, currentIndex)).toEqual(finalIndex);
-                expect(initState).toEqual(finalState);
+                const computer = new Computer(initState);
+                computer.add();
+                expect(computer.memory).toEqual(finalState);
             });
         });
     });
